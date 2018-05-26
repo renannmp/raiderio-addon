@@ -1065,6 +1065,7 @@ do
 			dungeons = payload.dungeons,
 			maxDungeonLevel = payload.maxDungeonLevel,
 			maxDungeonName = CONST_DUNGEONS[payload.maxDungeonIndex] and CONST_DUNGEONS[payload.maxDungeonIndex].shortName or '',
+			maxDungeonNameLocale = CONST_DUNGEONS[payload.maxDungeonIndex] and CONST_DUNGEONS[payload.maxDungeonIndex].shortNameLocale or '',
 			keystoneTenPlus = payload.keystoneTenPlus,
 			keystoneFifteenPlus = payload.keystoneFifteenPlus,
 		}
@@ -1247,7 +1248,7 @@ do
 			end
 
 			if not highlightStr and profile.maxDungeonLevel > 0 then
-				highlightStr = "+" .. profile.maxDungeonLevel .. " " .. profile.maxDungeonName
+				highlightStr = "+" .. profile.maxDungeonLevel .. " " .. profile.maxDungeonNameLocale
 			end
 
 			-- queued/focus highlight variables
@@ -1259,7 +1260,7 @@ do
 				local l = profile.dungeons[focusOnDungeonIndex]
 				if l > 0 then
 					qHighlightStrSameAsBest = profile.maxDungeonName == d.shortName
-					qHighlightStr1 = d.shortName
+					qHighlightStr1 = d.shortNameLocale
 					qHighlightStr2 = "+" .. l
 				end
 			end
@@ -1284,14 +1285,14 @@ do
 						-- we are hosting, so this is the only keystone we are interested in showing
 						if profile.dungeons[queued.index] > 0 then
 							qHighlightStrSameAsBest = profile.maxDungeonName == queued.dungeon.shortName
-							qHighlightStr1 = queued.dungeon.shortName
+							qHighlightStr1 = queued.dungeon.shortNameLocale
 							qHighlightStr2 = "+" .. profile.dungeons[queued.index]
 							searchLevel = queued.level
 						end
 					else
 						-- at the moment we pick the first queued dungeon and hope the player only queues for one dungeon at a time, not multiple different keys
 						if profile.dungeons[queued[1].index] > 0 then
-							qHighlightStr1 = queued[1].dungeon.shortName
+							qHighlightStr1 = queued[1].dungeon.shortNameLocale
 							qHighlightStr2 = "+" .. profile.dungeons[queued[1].index]
 						end
 						-- try and see if the player is queued to something we got score for on this character
@@ -1301,7 +1302,7 @@ do
 							if profile.maxDungeonName == q.dungeon.shortName then
 								if l > 0 then
 									qHighlightStrSameAsBest = true
-									qHighlightStr1 = q.dungeon.shortName
+									qHighlightStr1 = q.dungeon.shortNameLocale
 									qHighlightStr2 = "+" .. l
 									searchLevel = q.level
 								end
@@ -2153,7 +2154,7 @@ do
 								local level = profile.dungeons[index]
 								if level > 0 then
 									-- TODO: sort these by dungeon level, descending
-									local dungeonName = CONST_DUNGEONS[index] and " " .. CONST_DUNGEONS[index].shortName or ""
+									local dungeonName = CONST_DUNGEONS[index] and " " .. CONST_DUNGEONS[index].shortNameLocale or ""
 									tooltip:AddDoubleLine(UnitName(unit), "+" .. level .. dungeonName, 1, 1, 1, 1, 1, 1)
 								end
 							end
