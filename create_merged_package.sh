@@ -1,5 +1,10 @@
 #!/bin/bash
 
+PKGNAME=$1
+if [ "x$PKGNAME" -eq "x" ]; then
+    PKGNAME=raiderio-addon-${NEW_VERSION}.zip
+fi
+
 mkdir -p package
 
 cd package
@@ -22,7 +27,6 @@ echo "Setting up as version v$NEW_VERSION"
 find . -name \*.toc -exec perl -pi -e "s/\@project-version\@/v$NEW_VERSION/" {} \;
 
 cd addon
-7z -tzip a ../raiderio-addon-${NEW_VERSION}.zip RaiderIO*
+7z -tzip a ../$PKGNAME RaiderIO*
 
-ls -al ../raiderio-addon-${NEW_VERSION}.zip
-
+ls -al ../$PKGNAME
