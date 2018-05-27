@@ -27,6 +27,6 @@ echo "Setting up as version v$NEW_VERSION"
 find . -name \*.toc -exec perl -pi -e "s/\@project-version\@/v$NEW_VERSION/" {} \;
 
 cd addon
-7z -tzip a ../$PKGNAME RaiderIO*
+zip -r9 ../$PKGNAME RaiderIO*
 
 ls -al ../$PKGNAME
