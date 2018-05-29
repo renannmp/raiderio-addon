@@ -1,15 +1,15 @@
 #!/bin/bash
 
+NEW_VERSION=`date -u +'%Y%m%d%H%M'`
+
 PKGNAME=$1
-if [ "x$PKGNAME" -eq "x" ]; then
+if [ "x$PKGNAME" = "x" ]; then
     PKGNAME=raiderio-addon-${NEW_VERSION}.zip
 fi
 
 mkdir -p package
 
 cd package
-
-NEW_VERSION=`date -u +'%Y%m%d%H%M'`
 
 echo "Downloading latest zip to base off of..."
 wget -O latest.zip https://wow.curseforge.com/projects/raiderio/files/latest
