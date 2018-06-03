@@ -1682,6 +1682,10 @@ end
 -- ui hooks
 do
 	function SetProfileTooltipNearFrame(frame, player, focusOnDungeonIndex, focusOnKeystoneLevel, forceFrameStrata, forcePlayer)
+		if not addonConfig.showRaiderIOProfile then
+			return
+		end
+
 		detailedTooltip:SetOwner(frame, "ANCHOR_NONE")
 		detailedTooltip:ClearAllPoints()
 		detailedTooltip:SetPoint("TOPLEFT", frame, "TOPRIGHT")
@@ -1827,6 +1831,8 @@ do
 			function OnHideDetailledTooltip(self)
 				if PVEFrame:IsShown() then
 					SetProfileTooltipNearFrame(PVEFrame, "player", nil, nil, "BACKGROUND")
+				else
+					detailedTooltip:Hide()
 				end
 			end
 			-- search results
