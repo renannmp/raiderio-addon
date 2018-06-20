@@ -2350,6 +2350,10 @@ do
 					ShowCustomDropDown(self, dropdown, dropdown.menuList[2].arg1)
 				end
 			elseif dropdown.which and supportedTypes[dropdown.which] then -- UnitPopup
+				if not dropdown.name:find('-') then
+					dropdown.name = dropdown.name .. '-' .. dropdown.server
+				end
+
 				if addonConfig.showDropDownCopyURL then
 					ShowCustomDropDown(self, dropdown, dropdown.chatTarget or dropdown.name, dropdown.unit, dropdown.which, dropdown.bnetIDAccount)
 				end
