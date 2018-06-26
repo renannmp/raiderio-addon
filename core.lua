@@ -30,7 +30,14 @@ local addonConfig = {
 	alwaysExtendTooltip = false,
 	showRaiderIOProfile = true,
 	enableProfileModifier = true,
-	inverseProfileModifier = false
+	inverseProfileModifier = false,
+	positionProfileAuto = true,
+	lockProfile = false,
+	profilePoint = {
+		["point"] = nil,
+		["x"] = 0,
+		["y"] = 0
+	}
 }
 
 -- session
@@ -47,13 +54,16 @@ local dataProvider
 
 -- tooltip related hooks and storage
 local tooltipArgs = {}
+local playerTooltip
+
 local tooltipHooks = {
 	Wipe = function()
 		wipe(tooltipArgs)
+		playerTooltip = nil
 	end
 }
 
-local detailedTooltip = CreateFrame("GameTooltip","detailedTooltip",UIParent,"GameTooltipTemplate")
+local profileTooltip = CreateFrame("GameTooltip"," profileTooltip", UIParent, "GameTooltipTemplate")
 
 -- player
 local PLAYER_FACTION
@@ -490,6 +500,8 @@ end
 -- addon functions
 local Init
 local InitConfig
+local ProfileTooltip_SetFrameDraggability -- Needs to be set here to be used in the config
+local ProfileTooltip_ShowNearFrame -- Needs to be set here to be used in the config
 do
 	-- update local reference to the correct savedvariable table
 	local function UpdateGlobalConfigVar()
@@ -659,6 +671,23 @@ do
 			end
 			if reload then
 				StaticPopup_Show("RAIDERIO_RELOADUI_CONFIRM")
+			end
+
+			-- snap Tooltip back to the PVEFrame when auto is turned on
+			if addonConfig.positionProfileAuto and PVEFrame:IsShown() then
+				ProfileTooltip_ShowNearFrame(PVEFrame, "BACKGROUND")
+			end
+
+			-- Draggability of profileTooltip frame
+			ProfileTooltip_SetFrameDraggability(not addonConfig.positionProfileAuto and not addonConfig.lockProfile)
+
+			-- Reset profile position to nil
+			if addonConfig.positionProfileAuto then
+				addonConfig.profilePoint = {
+					["point"] = nil,
+					["x"] = nil,
+					["y"] = nil
+				}
 			end
 		end
 
@@ -865,6 +894,8 @@ do
 			config:CreateOptionToggle(L.SHOW_RAIDERIO_PROFILE, L.SHOW_RAIDERIO_PROFILE_DESC, "showRaiderIOProfile", true)
 			config:CreateOptionToggle(L.SHOW_LEADER_PROFILE, L.SHOW_LEADER_PROFILE_DESC, "enableProfileModifier")
 			config:CreateOptionToggle(L.INVERSE_PROFILE_MODIFIER, L.INVERSE_PROFILE_MODIFIER_DESC, "inverseProfileModifier")
+			config:CreateOptionToggle(L.ENABLE_AUTO_FRAME_POSITION, L.ENABLE_AUTO_FRAME_POSITION_DESC, "positionProfileAuto")
+			config:CreateOptionToggle(L.ENABLE_LOCK_PROFILE_FRAME, L.ENABLE_LOCK_PROFILE_FRAME_DESC, "lockProfile")
 
 			config:CreatePadding()
 			config:CreateHeadline(L.COPY_RAIDERIO_PROFILE_URL)
@@ -958,22 +989,41 @@ do
 			_G["SLASH_" .. addonName .. "2"] = "/rio"
 
 			local function handler(text)
+				if type(text) == "string" then
 
-				-- if the keyword "debug" is present in the command we show the query dialog
-				if type(text) == "string" and text:find("[Dd][Ee][Bb][Uu][Gg]") then
-					if not ns.DEBUG_UI and ns.DEBUG_INIT then
-						if ns.DEBUG_INIT_WARNED then
-							ns.DEBUG_INIT()
-						else
-							ns.DEBUG_INIT_WARNED = 1
-							DEFAULT_CHAT_FRAME:AddMessage("This is an experimental feature. Once you are done using this tool, please |cffFFFFFF/reload|r your interface, or relog, in order to restore AutoCompletion functionality elsewhere in the interface. Type the command again to confirm and load the tool.", 1, 1, 0)
+					-- if the keyword "lock" is present in the command we toggle lock behavior on profile frame
+					if text:find("[Ll][Oo][Cc][Kk]") then
+						if addonConfig.positionProfileAuto then
+							DEFAULT_CHAT_FRAME:AddMessage(L.WARNING_LOCK_POSITION_FRAME_AUTO, 1, 1, 0)
+							return
 						end
+
+						if addonConfig.lockProfile then
+							DEFAULT_CHAT_FRAME:AddMessage(L.UNLOCKING_PROFILE_FRAME, 1, 1, 0)
+						else
+							DEFAULT_CHAT_FRAME:AddMessage(L.LOCKING_PROFILE_FRAME, 1, 1, 0)
+						end
+						addonConfig.lockProfile = not addonConfig.lockProfile
+						ProfileTooltip_SetFrameDraggability(not addonConfig.lockProfile)
+						return
 					end
-					if ns.DEBUG_UI then
-						ns.DEBUG_UI:SetShown(not ns.DEBUG_UI:IsShown())
+
+					-- if the keyword "debug" is present in the command we show the query dialog
+					if text:find("[Dd][Ee][Bb][Uu][Gg]") then
+						if not ns.DEBUG_UI and ns.DEBUG_INIT then
+							if ns.DEBUG_INIT_WARNED then
+								ns.DEBUG_INIT()
+							else
+								ns.DEBUG_INIT_WARNED = 1
+								DEFAULT_CHAT_FRAME:AddMessage("This is an experimental feature. Once you are done using this tool, please |cffFFFFFF/reload|r your interface, or relog, in order to restore AutoCompletion functionality elsewhere in the interface. Type the command again to confirm and load the tool.", 1, 1, 0)
+							end
+						end
+						if ns.DEBUG_UI then
+							ns.DEBUG_UI:SetShown(not ns.DEBUG_UI:IsShown())
+						end
+						-- we do not wish to show the config dialog at this time
+						return
 					end
-					-- we do not wish to show the config dialog at this time
-					return
 				end
 
 				-- resume regular routine
@@ -1269,8 +1319,6 @@ local GetFormattedRunCount
 local AppendGameTooltip
 local UpdateAppendedGameTooltip
 local AppendAveragePlayerScore
-local CreateDetailedTooltip
-local SetProfileTooltipNearFrame
 do
 	local function sortRoleScores(a, b)
 		return a[2] > b[2]
@@ -1310,7 +1358,8 @@ do
 			end
 
 			-- assign the current function args for later use
-			tooltipArgs[1], tooltipArgs[2], tooltipArgs[3], tooltipArgs[4], tooltipArgs[5], tooltipArgs[6], tooltipArgs[7] = tooltip, arg1, forceNoPadding, forceAddName, forceFaction, focusOnDungeonIndex, focusOnKeystoneLevel
+			playerTooltip = tooltip
+			tooltipArgs[1], tooltipArgs[2], tooltipArgs[3], tooltipArgs[4], tooltipArgs[5], tooltipArgs[6] = arg1, forceNoPadding, forceAddName, forceFaction, focusOnDungeonIndex, focusOnKeystoneLevel
 
 			-- should we show the extended version of the data?
 			local showExtendedTooltip = addon.modKey or addonConfig.alwaysExtendTooltip
@@ -1497,9 +1546,10 @@ do
 	-- triggers a tooltip update of the current visible tooltip
 	function UpdateAppendedGameTooltip()
 		-- sanity check that the args exist
-		if not tooltipArgs[1] or not tooltipArgs[1]:GetOwner() then return end
+		if not playerTooltip or not playerTooltip:GetOwner() then return end
 		-- unpack the args
-		local tooltip, arg1, forceNoPadding, forceAddName, forceFaction, focusOnDungeonIndex, focusOnKeystoneLevel = tooltipArgs[1], tooltipArgs[2], tooltipArgs[3], tooltipArgs[4], tooltipArgs[5], tooltipArgs[6], tooltipArgs[7]
+		local tooltip = playerTooltip
+		local arg1, forceNoPadding, forceAddName, forceFaction, focusOnDungeonIndex, focusOnKeystoneLevel = tooltipArgs[1], tooltipArgs[2], tooltipArgs[3], tooltipArgs[4], tooltipArgs[5], tooltipArgs[6]
 
 		-- units only need to SetUnit to re-draw the tooltip properly
 		local _, unit = tooltip:GetUnit()
@@ -1553,29 +1603,55 @@ do
 			end
 		end
 	end
+end
 
-	function CreateDetailedTooltip(tooltip, arg1, forceFaction, focusOnDungeonIndex, focusOnKeystoneLevel)
+-- RaiderIO Profile
+local ProfileTooltip_Update
+do
+	function ProfileTooltip_Update(forcePlayer)
+		if not profileTooltip or not profileTooltip:GetOwner() then
+			return
+		end
+
+		local arg1, forceNoPadding, forceAddName, forceFaction, focusOnDungeonIndex, focusOnKeystoneLevel = tooltipArgs[1], tooltipArgs[2], tooltipArgs[3], tooltipArgs[4], tooltipArgs[5], tooltipArgs[6]
+
+		if not arg1 then
+			arg1 = "player"
+		end
+
+		if not forcePlayer then
+			if not addonConfig.enableProfileModifier then
+				arg1 = "player"
+			else
+				if (not addonConfig.inverseProfileModifier and not addon.modKey) or (addonConfig.inverseProfileModifier and addon.modKey) then
+					arg1 = "player"
+				end
+			end
+		end
+
 		local profile = GetScore(arg1, nil, forceFaction)
 
 		-- sanity check that the profile exists
 		if not profile then
-			return 0
+			return
 		end
+
+		profileTooltip:ClearLines()
 
 		if arg1 == "player" then
-			tooltip:AddLine(L.MY_PROFILE_TITLE, 1, 0.85, 0, false)
+			profileTooltip:AddLine(L.MY_PROFILE_TITLE, 1, 0.85, 0, false)
 		else
-			tooltip:AddLine(L.PLAYER_PROFILE_TITLE, 1, 0.85, 0, false)
+			profileTooltip:AddLine(L.PLAYER_PROFILE_TITLE, 1, 0.85, 0, false)
 		end
 
-		tooltip:AddDoubleLine(profile.name, GetFormattedScore(profile.allScore, profile.isPrevAllScore), 1, 1, 1, GetScoreColor(profile.allScore))
+		profileTooltip:AddDoubleLine(profile.name, GetFormattedScore(profile.allScore, profile.isPrevAllScore), 1, 1, 1, GetScoreColor(profile.allScore))
 
 		if profile.mainScore > profile.allScore then
-			tooltip:AddDoubleLine(L.MAINS_SCORE, profile.mainScore, 1, 1, 1, GetScoreColor(profile.mainScore))
+			profileTooltip:AddDoubleLine(L.MAINS_SCORE, profile.mainScore, 1, 1, 1, GetScoreColor(profile.mainScore))
 		end
 
-		tooltip:AddLine(" ")
-		tooltip:AddLine(L.PROFILE_BEST_RUNS, 1, 0.85, 0, false)
+		profileTooltip:AddLine(" ")
+		profileTooltip:AddLine(L.PROFILE_BEST_RUNS, 1, 0.85, 0, false)
 
 		local dungeons = {}
 		for dungeonIndex, keyLevel in ipairs(profile.dungeons) do
@@ -1618,15 +1694,56 @@ do
 --				end
 			end
 
-			tooltip:AddDoubleLine(dungeon.shortName, keyLevel, colorDungeonName.r, colorDungeonName.g, colorDungeonName.b, colorDungeonLevel.r, colorDungeonLevel.g, colorDungeonLevel.b)
+			profileTooltip:AddDoubleLine(dungeon.shortName, keyLevel, colorDungeonName.r, colorDungeonName.g, colorDungeonName.b, colorDungeonLevel.r, colorDungeonLevel.g, colorDungeonLevel.b)
 		end
 
 		if OUTDATED_DAYS[profile.faction] > 1 then
-			tooltip:AddLine(" ")
-			tooltip:AddLine(format(L.OUTDATED_DATABASE, OUTDATED_DAYS[profile.faction]), 0.8, 0.8, 0.8, false)
+			profileTooltip:AddLine(" ")
+			profileTooltip:AddLine(format(L.OUTDATED_DATABASE, OUTDATED_DAYS[profile.faction]), 0.8, 0.8, 0.8, false)
 		elseif OUTDATED_HOURS[profile.faction] > 12 then
-			tooltip:AddLine(" ")
-			tooltip:AddLine(format(L.OUTDATED_DATABASE_HOURS, OUTDATED_HOURS[profile.faction]), 0.8, 0.8, 0.8, false)
+			profileTooltip:AddLine(" ")
+			profileTooltip:AddLine(format(L.OUTDATED_DATABASE_HOURS, OUTDATED_HOURS[profile.faction]), 0.8, 0.8, 0.8, false)
+		end
+
+		profileTooltip:Show()
+	end
+
+	function ProfileTooltip_ShowNearFrame(frame, forceFrameStrata, forcePlayer)
+		if not addonConfig.showRaiderIOProfile then
+			return
+		end
+
+		profileTooltip:SetOwner(frame, "ANCHOR_NONE")
+		profileTooltip:ClearAllPoints()
+		profileTooltip:SetPoint("TOPLEFT", frame, "TOPRIGHT")
+
+		profileTooltip:SetFrameStrata(forceFrameStrata or frame:GetFrameStrata())
+
+		ProfileTooltip_Update(forcePlayer)
+	end
+
+	local function ProfileTooltip_OnDragStop(self)
+		self:StopMovingOrSizing()
+		local point, _, _, x, y = self:GetPoint()
+		addonConfig.profilePoint = {
+			["point"] = point,
+			["x"] = x,
+			["y"] = y
+		}
+	end
+
+	function ProfileTooltip_SetFrameDraggability(draggable)
+		profileTooltip:SetMovable(draggable)
+		profileTooltip:EnableMouse(draggable)
+
+		if draggable then
+			profileTooltip:RegisterForDrag("LeftButton")
+			profileTooltip:SetScript("OnDragStart", profileTooltip.StartMoving)
+			profileTooltip:SetScript("OnDragStop", ProfileTooltip_OnDragStop)
+		else
+			profileTooltip:RegisterForDrag(nil)
+			profileTooltip:SetScript("OnDragStart", nil)
+			profileTooltip:SetScript("OnDragStop", nil)
 		end
 	end
 end
@@ -1755,32 +1872,6 @@ end
 
 -- ui hooks
 do
-	function SetProfileTooltipNearFrame(frame, player, focusOnDungeonIndex, focusOnKeystoneLevel, forceFrameStrata, forcePlayer)
-		if not addonConfig.showRaiderIOProfile then
-			return
-		end
-
-		detailedTooltip:SetOwner(frame, "ANCHOR_NONE")
-		detailedTooltip:ClearAllPoints()
-		detailedTooltip:SetPoint("TOPLEFT", frame, "TOPRIGHT")
-
-		detailedTooltip:SetFrameStrata(forceFrameStrata or frame:GetFrameStrata())
-
-		if not forcePlayer then
-			if not addonConfig.enableProfileModifier then
-				player = "player"
-			else
-				if (not addonConfig.inverseProfileModifier and not addon.modKey) or (addonConfig.inverseProfileModifier and addon.modKey) then
-					player = "player"
-				end
-			end
-		end
-
-		CreateDetailedTooltip(detailedTooltip, player, nil, focusOnDungeonIndex, focusOnKeystoneLevel)
-
-		detailedTooltip:Show() --Show the tooltip
-	end
-
 	-- extract character name and realm from BNet friend
 	local function GetNameAndRealmForBNetFriend(bnetIDAccount)
 		local index = BNGetFriendIndex(bnetIDAccount)
@@ -1861,7 +1952,7 @@ do
 	uiHooks[#uiHooks + 1] = function()
 		if _G.LFGListApplicationViewerScrollFrameButton1 then
 			local hooked = {}
-			local OnEnter, OnLeave, OnHideDetailledTooltip
+			local OnEnter, OnLeave, ProfileTooltip_OnHide
 			-- application queue
 			function OnEnter(self)
 				if not addonConfig.enableLFGTooltips then
@@ -1888,11 +1979,15 @@ do
 						local keystoneLevel = GetKeystoneLevel(title) or GetKeystoneLevel(description) or 0
 						AppendGameTooltip(GameTooltip, fullName, not hasOwner, true, PLAYER_FACTION, LFD_ACTIVITYID_TO_DUNGEONID[activityID], keystoneLevel)
 
-						SetProfileTooltipNearFrame(GameTooltip, fullName, LFD_ACTIVITYID_TO_DUNGEONID[activityID], keystoneLevel, nil, true)
+						if addonConfig.positionProfileAuto then
+							ProfileTooltip_ShowNearFrame(GameTooltip, nil, true)
+						else
+							ProfileTooltip_Update()
+						end
 
 						if not hooked["applicant"] then
 							hooked["applicant"] = 1
-							GameTooltip:HookScript("OnHide", OnHideDetailledTooltip)
+							GameTooltip:HookScript("OnHide", ProfileTooltip_OnHide)
 						end
 					end
 				end
@@ -1902,11 +1997,15 @@ do
 					GameTooltip:Hide()
 				end
 			end
-			function OnHideDetailledTooltip(self)
+			function ProfileTooltip_OnHide(self)
 				if PVEFrame:IsShown() then
-					SetProfileTooltipNearFrame(PVEFrame, "player", nil, nil, "BACKGROUND")
+					if addonConfig.positionProfileAuto then
+						ProfileTooltip_ShowNearFrame(PVEFrame, "BACKGROUND")
+					else
+						ProfileTooltip_Update()
+					end
 				else
-					detailedTooltip:Hide()
+					profileTooltip:Hide()
 				end
 			end
 			-- search results
@@ -1914,27 +2013,24 @@ do
 				local _, activityID, title, description, _, _, _, _, _, _, _, _, leaderName = C_LFGList.GetSearchResultInfo(resultID)
 				if leaderName then
 					local keystoneLevel = GetKeystoneLevel(title) or GetKeystoneLevel(description) or 0
-					AppendGameTooltip(tooltip, leaderName, false, true, PLAYER_FACTION, LFD_ACTIVITYID_TO_DUNGEONID[activityID], keystoneLevel)
-				end
-			end
-			hooksecurefunc("LFGListUtil_SetSearchEntryTooltip", SetSearchEntryTooltip)
 
-			local function DisplayProfileTooltip(tooltip, resultID)
-				local _, activityID, title, description, _, _, _, _, _, _, _, _, leaderName = C_LFGList.GetSearchResultInfo(resultID)
-				if leaderName then
-					local keystoneLevel = GetKeystoneLevel(title) or GetKeystoneLevel(description) or 0
-					SetProfileTooltipNearFrame(tooltip, leaderName, LFD_ACTIVITYID_TO_DUNGEONID[activityID], keystoneLevel)
+					-- Update game tooltip with player info
+					AppendGameTooltip(tooltip, leaderName, false, true, PLAYER_FACTION, LFD_ACTIVITYID_TO_DUNGEONID[activityID], keystoneLevel)
+
+					-- RaiderIO Profile
+					if addonConfig.positionProfileAuto then
+						ProfileTooltip_ShowNearFrame(tooltip)
+					else
+						ProfileTooltip_Update()
+					end
 
 					if not hooked["applicant"] then
 						hooked["applicant"] = 1
-						GameTooltip:HookScript("OnHide", OnHideDetailledTooltip)
+						GameTooltip:HookScript("OnHide", ProfileTooltip_OnHide)
 					end
 				end
 			end
-
-			if addonConfig.showRaiderIOProfile then
-				hooksecurefunc("LFGListUtil_SetSearchEntryTooltip", DisplayProfileTooltip)
-			end
+			hooksecurefunc("LFGListUtil_SetSearchEntryTooltip", SetSearchEntryTooltip)
 
 			-- execute delayed hooks
 			for i = 1, 14 do
@@ -2432,18 +2528,29 @@ do
 			return 1
 		end
 
-		local function ShowTooltipRaiderIO()
-			if not detailedTooltip:IsShown() then
-				SetProfileTooltipNearFrame(PVEFrame, "player", nil, nil, "BACKGROUND")
+		local function ProfileTooltip_Show()
+			if not profileTooltip:IsShown() then
+				ProfileTooltip_ShowNearFrame(PVEFrame, "BACKGROUND")
+
+				if not addonConfig.positionProfileAuto then
+					if addonConfig.profilePoint.point ~= nil then
+						profileTooltip:ClearAllPoints()
+						profileTooltip:SetPoint(addonConfig.profilePoint.point, nil, addonConfig.profilePoint.point, addonConfig.profilePoint.x, addonConfig.profilePoint.y)
+					end
+
+					if not addonConfig.lockProfile then
+						ProfileTooltip_SetFrameDraggability(true)
+					end
+				end
 			end
 		end
 
-		local function HideTooltip()
-			detailedTooltip:Hide()
+		local function ProfileTooltip_Hide()
+			profileTooltip:Hide()
 		end
 
-		hooksecurefunc(PVEFrame, "Show", ShowTooltipRaiderIO)
-		hooksecurefunc(PVEFrame, "Hide", HideTooltip)
+		hooksecurefunc(PVEFrame, "Show", ProfileTooltip_Show)
+		hooksecurefunc(PVEFrame, "Hide", ProfileTooltip_Hide)
 		return 1
 	end
 end
