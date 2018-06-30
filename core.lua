@@ -1608,18 +1608,28 @@ end
 -- RaiderIO Profile
 local ProfileTooltip_Update
 do
-	function ProfileTooltip_Update(forcePlayer)
+	-- force can either be "player", "target" or not defined
+	-- if force == player then always display player's profile
+	-- if force == target then always display the active player tooltip
+	-- if force is not defined, then the display depends on the modifier and the configuration
+	function ProfileTooltip_Update(force)
 		if not profileTooltip or not profileTooltip:GetOwner() then
 			return
 		end
 
 		local arg1, forceNoPadding, forceAddName, forceFaction, focusOnDungeonIndex, focusOnKeystoneLevel = tooltipArgs[1], tooltipArgs[2], tooltipArgs[3], tooltipArgs[4], tooltipArgs[5], tooltipArgs[6]
 
-		if not arg1 then
+		-- force player
+		if force == "player" then
 			arg1 = "player"
 		end
 
-		if not forcePlayer then
+		-- force target
+		if force ~= "target" then
+			if not arg1 then
+				arg1 = "player"
+			end
+
 			if not addonConfig.enableProfileModifier then
 				arg1 = "player"
 			else
@@ -1708,7 +1718,7 @@ do
 		profileTooltip:Show()
 	end
 
-	function ProfileTooltip_ShowNearFrame(frame, forceFrameStrata, forcePlayer)
+	function ProfileTooltip_ShowNearFrame(frame, forceFrameStrata, force)
 		if not addonConfig.showRaiderIOProfile then
 			return
 		end
@@ -1719,7 +1729,7 @@ do
 
 		profileTooltip:SetFrameStrata(forceFrameStrata or frame:GetFrameStrata())
 
-		ProfileTooltip_Update(forcePlayer)
+		ProfileTooltip_Update(force)
 	end
 
 	local function ProfileTooltip_OnDragStop(self)
@@ -1980,9 +1990,9 @@ do
 						AppendGameTooltip(GameTooltip, fullName, not hasOwner, true, PLAYER_FACTION, LFD_ACTIVITYID_TO_DUNGEONID[activityID], keystoneLevel)
 
 						if addonConfig.positionProfileAuto then
-							ProfileTooltip_ShowNearFrame(GameTooltip, nil, true)
+							ProfileTooltip_ShowNearFrame(GameTooltip, nil, "target")
 						else
-							ProfileTooltip_Update()
+							ProfileTooltip_Update("target")
 						end
 
 						if not hooked["applicant"] then
@@ -2530,7 +2540,7 @@ do
 
 		local function ProfileTooltip_Show()
 			if not profileTooltip:IsShown() then
-				ProfileTooltip_ShowNearFrame(PVEFrame, "BACKGROUND")
+				ProfileTooltip_ShowNearFrame(PVEFrame, "BACKGROUND", "player")
 
 				if not addonConfig.positionProfileAuto then
 					if addonConfig.profilePoint.point ~= nil then
