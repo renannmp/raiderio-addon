@@ -2,23 +2,34 @@
 -- Copyright (c) 2020 by Ludicrous Speed, LLC
 -- All rights reserved.
 --
-local provider={name=...,data=1,region="tw",faction=1,date="2020-12-10T06:00:30Z",currentSeasonId=0,numCharacters=146114,db1={}}
+local provider={name=...,data=1,region="tw",faction=1,date="2020-12-11T06:00:31Z",currentSeasonId=0,numCharacters=265665,db1={}}
 local F
 
-F = function() provider.db1["暗影之月"]={0,"Anathema","Azazell","Azhou","Bananthony","Betterthanu","Boyumonk","Elmog","Fatale","Fevernova","Genvoya","Heisenberrg","Hvnara","Legendwcnsb","Longhan","Niflheimr","Rzhe","亞瑞薩斯","冬眠的滷味","冷面寶寶","哀豔","噬魘","多小菲","奧蕾賽絲","小小生煎包","小雪吉拉","昏睡喵","未泱","柚子茗","森森玉致","海鮮殺手","深紅龍","牛弟牛弟","球黑球","神聖耶菈","神龍魅來了","紫色西瓜","胖丁","舞肆参貳壹","萬菲斯","薩柯","虛無大熊","貂語","踏譜","黑白麼麼噠"} end F()
-F = function() provider.db1["世界之樹"]={968,"Druiddroid","Mostococo","Rever"} end F()
-F = function() provider.db1["語風"]={1034,"Azraelia","Djs","Nucleosides","Poem","井上熊彥","人頭落地","兔美子","夏天下雪","杯麵麵食館","炮姐的安全褲","糖果霓妮","蜂蜜蘆薈","貓小爪","賞花杏仁露","阿希莉亞"} end F()
-F = function() provider.db1["天空之牆"]={1364,"Lavandinowo","猴猴薩滿"} end F()
-F = function() provider.db1["眾星之子"]={1408,"Loyota","Repede","一歲就很壞","呼吸牌雞腿飯","奧特莉雅絲","奶茶小咪","德曉妮","雪夜鶯歌"} end F()
-F = function() provider.db1["阿薩斯"]={1584,"沐雨微微","素顏最驚人"} end F()
-F = function() provider.db1["狂熱之刃"]={1628,"Krys","善逸","皇家警賊"} end F()
-F = function() provider.db1["日落沼澤"]={1694,"Vortiz","Xjbb","仲夏大熊","大德魯伊","宇智波牙程","野豬術士來囉"} end F()
-F = function() provider.db1["亞雷戈斯"]={1826,"Aidar","光葉","德滷伊","怪頭薩薩"} end F()
-F = function() provider.db1["寒冰皇冠"]={1914,"元朗酒筲箕"} end F()
-F = function() provider.db1["尖石"]={1936,"Giillh"} end F()
-F = function() provider.db1["聖光之願"]={1958,"Gueiche","果汁騎士"} end F()
-F = function() provider.db1["銀翼要塞"]={2002,"Ballranger","Cupiditas","Hehehexd","Nstark","Pixaar","Tamama","山德士土校","巫妖丶阿薩斯","滾動岩"} end F()
-F = function() provider.db1["地獄吼"]={2200,"Reio"} end F()
+F = function() provider.db1["暗影之月"]={0,"Anathema","Azazell","Azhou","Bakuhatsu","Bananthony","Betterthanu","Boyumonk","Báizé","Calista","Chatterley","Chillbro","Cosette","Dec","Elmog","Fancian","Fatale","Fatlarla","Fevernova","Genvoya","Gudako","Heisenberrg","Hippy","Hvnara","Ibgdrgn","Ishnualah","Jasminetheul","Kinzz","Koszalina","Legendwcnsb","Lilithh","Longhan","Meek","Mjölner","Monkmaster","Mowajuhua","Nalice","Neveu","Niflheimr","Pokadk","Popodie","Ppx","Rinco","Rnjin","Rzhe","Stonnystonny","Taittaaii","Totodh","Tuco","Wolfienib","Xaviera","Xveda","Zzard","一坨菜","一小蝸一","一根風怒圖騰","一狼戰士一","乂嬡乂","九頭雞","亞瑞薩斯","全職賭撚逝世","兩個黃鸝","八神隼人","冬眠的滷味","冷面寶寶","凌凌八","加西奥斯","南劍天","卡勒逼","原來是賊","吾曰君子不救","呵呵操盤魚","咕姑固","哀豔","喵嗚喵喵","噬魘","囧興","堪稱神的對手","多小菲","夜凝夏","夜貓牧師","夜風戀月光","夜魚龍舞","大涼奶","大熊爸爸","奧蕾賽絲","女演員","妖妖喵","妮可蘿賓","妮露艾爾","妳不知道的事","寶石翁","小土星","小宮有紗","小小生煎包","小關","小雪吉拉","希亞娜女王","希王","希里吉薇艾兒","希門吹雪","幻想奏鳴曲","幻殺月舞","幽夜旋律","御煌","微笑泰莉莎","怪頭妮妮","怪頭獵人","懺悔的空氣","我也很絕望","我是你的眼","戰慄的蛋卷","戰神梓赫","找你呢","拉格諾斯","捅爆你屁屁","搞笑熊","摩訶","日晞","明宗居士","昏睡喵","星界法師","是誰這麼大膽","朦朧","未泱","杜蘿西亞","柚子茗","柯基是朵花","森森玉致","楓千緒","楓小貓","極凍炭爐","機八僧","欸你過來一下","法師之手","波蘿頭","洗淨平底鍋","流砂","海晴兒","海鮮殺手","深紅龍","滿澄火","濁劣","火星鴨","火神山醫生","烈焰鳳凰","無敵陳老闆","無薪假期","煙縷雲岫","牛仔牛囝","牛弟牛弟","狂野的獵手","獵你所愛","獵神雷蒙","球黑球","疾風之影","發霉的蔥花蛋","白发无面纹","皓善","矇矇魚","神聖耶菈","神龍魅來了","穆易","紅手喬伊","紫欣然","紫色西瓜","繼續轉動","聖光小優","聖女美雪","聖扉","胖丁","舞楓沐影","舞肆参貳壹","艾姆范恩","艾彌","芙珥喬娜","芮婗亞","芯玥兒","花貓雪","萬菲斯","薩柯","薩爾妲","蘑菇麵加蛋","虛無大熊","蚴蛝","蟬之翼","討厭催淚彈","詩人說夢","貂語","貓奈","貧妮用飄柔","走糖少冰","踏譜","這遊戲好複雜","邦利歐比康","邪惡枝仔冰","酥脆玻璃心","野莓慕斯","銀背爪爪","長腿小蔔","閃現撞牆上","阿特洛波絲","零界點","青月","韓唲","飆飆","飛盤俠","麻枝來打棒球","黑帝斯普路托","黑暗左右","黑白麼麼噠","黔狼","點解你咁肥","黯然消魂人","龍捲條"} end F()
+F = function() provider.db1["世界之樹"]={4708,"Ariik","Druiddroid","Gililh","Happysun","Mostococo","Nébuleuse","Rever","乂靜思己過乂","你會愛我","保護豆豆","光之變形者","克娳斯汀","冷雪寒","嗚嚎叫宣覺","夕雨","天壤的劫火","妃櫻","寵兒","對月狂舞","山里大叔","月光光鈊慌慌","發票沒中過","章丘小豆芽","紫夜無名","老白酒莊","聆聽","芒果的命運","鬼大大"} end F()
+F = function() provider.db1["語風"]={5324,"Aesir","Asynjur","Azraelia","Djs","Dragonia","Earlybird","Mel","Ninfa","Nucleosides","Penda","Poem","Qeenie","Zwdoy","一幽隱水晶一","不夜貓的夜貓","井上熊彥","人頭落地","兔美子","八月十五","兮兮","冰雪系最強","初夜終結者","千邵一","吸血鬼小紫","啊潘","夏天下雪","夏蘇勒哈","天玄寶寶","好玩海霸","威靈頓牛排","射手小濕","小以","小哭包","小夜貓子潞","岑風暴烈酒","崇高幻象","庫爾提拉米酥","影雪","心懷希望","忘水魚","悠月小雍","慕容傲雪","捏捏大兔大","明天存在嗎","最初的心願","月下亮爪子","杯麵麵食館","板橋彭于晏","格雷特凱撒","沠沠","潔希卡","澤秋","炮姐的安全褲","無夢羁绊","燈籠魚","瑪琉雷名斯","笋笋","糖果霓妮","耶穌嘰嘟叫","胡薩薩","膚潘達","落花紛飛時","蜂蜜蘆薈","貓小爪","貓貓喵","賞花杏仁露","釋慧","鎚子","阿希莉亞","陸絺","雅紗","騎豬豬看日出"} end F()
+F = function() provider.db1["天空之牆"]={6908,"Anticheat","Azr","Bajheeroth","Lavandinowo","Leaco","Mandarava","Maoo","Playforfunnz","Seoyeji","不久之後","今西","企鵝之怒","伊卡璐斯之翼","傘下江南","冬子","喚出來會死人","嘻哈熊","夏燁","天忍","小謝","就叫我傻瓜","微妙的旋律","愛吃貓的魚","斯娜","昭然","楓纓","榭洛特尼奧","猴猴薩滿","秋姬","章魚咖啡","紫色絲絲","絕代風雅之狂","躁動戰意","這名子六個字","電磁砲砲","風杏語","高手"} end F()
+F = function() provider.db1["眾星之子"]={7722,"Alone","Arthars","Bonmepon","Ezellohar","Loyota","Phanatic","Repede","一歲就很壞","你艾希我納兒","厚切五分熟","古列特拉圖","呼吸牌雞腿飯","咪小聖","国足第一人","夏夜神話","奧特莉雅絲","奶茶小咪","姑娘酒渦笑笑","小蘋果","彌豆子卡哇伊","德曉妮","情緒管理大師","打拳哥","未來之人","東影舞者","楊二","櫻花乂飛舞","殘風夜雪","殺生丸","流浪的乞丐","無法反應","筱箭魚","胤嵐光","花語心晴","芳兒寶寶","華小牧","蛋蛋私獵商","陷阱","雪夜鶯歌"} end F()
+F = function() provider.db1["阿薩斯"]={8580,"Bbjiang","乾老二","划船不靠漿","又是老查","奈辛瓦里遺民","小雨點","很軟的坦克","搗蛋糖","有問題法院講","楓雪飛月","沐雨微微","浩呆他爹","碎爐者","空語","素顏最驚人","覺醒乂手殘"} end F()
+F = function() provider.db1["巨龍之喉"]={8932,"Ccpangzz","Scottmccall","Signal","寂靜的冬天","小悲傷","恆雲流水","皇家聖騎士","祗熙"} end F()
+F = function() provider.db1["聖光之願"]={9108,"Dector","Glamis","Gueiche","Mickcy","Shadowrider","Solei","Sprider","Well","乂黑色物語乂","你好要跑路嗎","光玥","冷魅女神","可攻可受","喵了個次奧","嘴角蕩漾","小小齊","小熊鳥貓娘","惡饗","春風百里","松鼠猴","果汁騎士","桑葚果汁","滅魔天尊","滿月之詠","漂亮妹","無敵最俊朗","煉獄杏壽郎","熱戀紅豆冰","移動式肉塊","筱南","膝蓋殺手","芷靈","薩那的圓仔","處男大帝國","豬阿","雪貓香噴噴","雲蔽月","鷹眼再現"} end F()
+F = function() provider.db1["寒冰皇冠"]={9944,"Alexx","Cêlestine","Syrus","傅帥","元朗酒筲箕","真賊二點零","紫霞仙子","魚餅乾"} end F()
+F = function() provider.db1["狂熱之刃"]={10120,"Krys","Pageantry","Runrogue","卡哇怡","善逸","小尾巴","愛伊莎貝拉","皇家警賊","誰是壞狗狗","魔化狩獵","鮮肉小湯包"} end F()
+F = function() provider.db1["日落沼澤"]={10362,"Darkcatz","Doraeemon","Evengame","Ignition","Leixi","Miinae","Mizer","Tcmlol","Turncoats","Uzi","Vortiz","Xjbb","仲夏大熊","伊迪絲","優佩蕾","吹吹盜賊","大德魯伊","宇智波牙程","山之蜜","德魯盧魯嚕乳","想念","擲手","月朧砂","森旅迷了鹿","潘潘達","爆袋分屍薩","牧師優先","紅楓可頌","老兵不提當年","肉粽娃娃","腐皮","花落傾語","輕鬆都可以","逸暖","野豬術士來囉","颯爽的瑪達歐","飄渺虛無"} end F()
+F = function() provider.db1["亞雷戈斯"]={11176,"Aidar","Ainanir","Atonement","Bogluw","Chowe","Jjay","Ki","Kittyfly","Lobenten","Mud","Nitamader","Shubnigurath","Wiwipedia","一大小姐一","一粒單","一術梨花","休閒的德魯伊","光葉","咩豬","夏恬恬","德滷伊","怪頭薩薩","挖咖摸多","暮色百合","死亡之戀","瓶中妖姬","神聖小魚","秒睡布朗尼","笂勍","翡嵐伊翠","腦殘手更殘","葉落雪舞","蟲反農藥","謎露","超級小雞","離子喵"} end F()
+F = function() provider.db1["銀翼要塞"]={11968,"Ballranger","Belie","Charas","Cupiditas","Enceladus","Freddyl","Hehehexd","Illivan","Nstark","Once","Pixaar","Tamama","冷寂寞空虛","大領主路過","小二拿酒來","山德士土校","巫妖丶阿薩斯","我叫吟吟","暗夜非名","朵朵的璇轉","森林女孩","武防速運","洋甘橘","洛葵","滾動岩","熾熱的天使","牙希","老夫先擼為敬","花老大","谷雨驚蟄","闇風影"} end F()
+F = function() provider.db1["血之谷"]={12650,"詩呂"} end F()
+F = function() provider.db1["地獄吼"]={12672,"Reio","冬瓜汁","星耀裂魂","盛世蓀草國師","閃光揪咪"} end F()
+F = function() provider.db1["尖石"]={12782,"Giillh","月光紫伊","落日死騎","邁歐踢","阿薩斯妹妹"} end F()
+F = function() provider.db1["水晶之刺"]={12892,"小白白豬","貓科無敵時間","達拉崩吧","黃昏旅團"} end F()
+F = function() provider.db1["雷鱗"]={12980,"三月兔","古典夢巴黎","咕幾","心靈悸動","新生聖光","暗夜知新"} end F()
+F = function() provider.db1["雲蛟衛"]={13112,"Rawbeef","梅若冰","阿雞飛快點"} end F()
+F = function() provider.db1["憤怒使者"]={13178,"我減肥成功了","狼送鹿替貢"} end F()
+F = function() provider.db1["屠魔山谷"]={13222,"Leichetania","一杯熱可可","冰妞妞","東區阿龐","滅世麒麟","要害"} end F()
+F = function() provider.db1["冰霜之刺"]={13354,"Iluvatar","卍小小卍","小龍","幽靈薩克","琉璃之光"} end F()
+F = function() provider.db1["冰風崗哨"]={13464,"Drich","一杯敬過往","巴格亞羅","聖光導師邁森","裝憂鬱裝文藝","青年冒險王"} end F()
+F = function() provider.db1["夜空之歌"]={13596,"人大倀委員","噬月","摩厚聖先生"} end F()
+F = function() provider.db1["米奈希爾"]={13662,"芙雷娜"} end F()
 
 F = nil
 RaiderIO.AddProvider(provider)
